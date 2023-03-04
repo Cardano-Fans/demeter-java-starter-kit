@@ -1,0 +1,51 @@
+plugins {
+    id("com.github.johnrengelman.shadow") version "8.1.0"
+    id("io.micronaut.application") version "3.7.4"
+}
+
+version = "1.0-SNAPSHOT"
+group = "org.cardanofoundation"
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+micronaut {
+    runtime("jetty")
+    testRuntime("junit5")
+    processing {
+        incremental(true)
+        annotations("org.cardanofoundation.*")
+    }
+}
+
+dependencies {
+    annotationProcessor('io.micronaut:micronaut-http-validation:3.2.7')
+    annotationProcessor('io.micronaut:micronaut-inject-java:3.2.7')
+
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    implementation("io.blockfrost:blockfrost-java:0.1.2")
+    implementation("com.bloxbean.cardano:cardano-client-lib:0.4.3")
+
+    implementation("commons-io:commons-io:2.11.0")
+
+    implementation('javax.annotation:javax.annotation-api:1.3.2')
+    runtimeOnly('ch.qos.logback:logback-classic:1.2.6')
+
+    testImplementation('org.testcontainers:junit-jupiter:1.16.2')
+    testImplementation("org.assertj:assertj-core:3.21.0")
+    testCompileOnly 'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+}
+
+application {
+    mainClass.set("org.cardanofoundation.CardanoStarterApp")
+}
+
+java {
+    sourceCompatibility = JavaVersion.toVersion("17")
+    targetCompatibility = JavaVersion.toVersion("17")
+}
