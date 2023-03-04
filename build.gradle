@@ -24,8 +24,8 @@ sourceCompatibility = '17'
 description = 'Cardano Java Starter Kit'
 
 dependencies {
-    implementation platform('org.springframework.boot:spring-boot-dependencies:3.0.1')
     implementation 'org.springframework.shell:spring-shell-starter:3.0.1'
+    implementation platform('org.springframework.boot:spring-boot-dependencies:3.0.1')
 
     implementation 'com.bloxbean.cardano:cardano-client-lib:0.4.3'
     implementation 'com.bloxbean.cardano:cardano-client-backend:0.4.3'
