@@ -6,10 +6,10 @@ import org.springframework.shell.standard.ShellComponent;
 
 @SpringBootApplication
 @ShellComponent
-public class CardanoStarterApp {
+public class CardanoJavaStarterKit {
 
     public static void main(String[] args) {
-        new SpringApplicationBuilder(CardanoStarterApp.class)
+        new SpringApplicationBuilder(CardanoJavaStarterKit.class)
                 .logStartupInfo(false)
                 .run(args);
     }

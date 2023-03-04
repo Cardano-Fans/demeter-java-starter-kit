@@ -5,6 +5,7 @@ import com.bloxbean.cardano.client.common.model.Networks;
 import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -19,26 +20,22 @@ import static crfa.app.util.ConsoleWriter.strLn;
 @Slf4j
 public class AddressCommands {
 
-    private Map<String, Account> accounts = new LinkedHashMap<>();
+    @Autowired
+    private NetworkCommands networkCommands;
 
-    enum Network {
-        MAINNET,
-        TESTNET,
-        PREPROD,
-        PREVIEW
-    }
+    private Map<String, Account> accounts = new LinkedHashMap<>();
 
     public Optional<Account> findAccountByName(String name) {
         return Optional.ofNullable(accounts.get(name));
     }
 
     @ShellMethod(value = "Generate new account", key = "gen-new-account")
-    public void generateNewAccount(@ShellOption(value = {"-n"}, defaultValue = "testnet", help = "Provide a known network (mainnet, testnet, preprod, preview)") String network) {
+    public void generateNewAccount() {
         val faker = new Faker();
         val funnyName = faker.funnyName();
         val name = funnyName.name().replace(" ", "_");
 
-        val account = createAcc(Network.valueOf(network.toUpperCase()));
+        val account = createAcc(networkCommands.getNetwork().orElseThrow());
 
         accounts.put(name, account);
 
@@ -71,10 +68,8 @@ public class AddressCommands {
         System.out.println(sb);
     }
 
-    private static Account createAcc(Network network) {
-        val n = network;
-
-        val nn = switch (n) {
+    private static Account createAcc(NetworkCommands.Network network) {
+        val nn = switch (network) {
             case MAINNET -> Networks.mainnet();
             case PREPROD -> Networks.preprod();
             case TESTNET -> Networks.testnet();
