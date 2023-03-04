@@ -1,4 +1,4 @@
-package org.cardanofoundation.infrastructure;
+package crfa.app.infrastructure;
 
 public enum AppEnv {
 
