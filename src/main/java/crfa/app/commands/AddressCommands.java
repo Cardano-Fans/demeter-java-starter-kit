@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.shell.standard.ShellOption;
 
 import static crfa.app.util.ConsoleWriter.strLn;
 
@@ -21,8 +22,8 @@ public class AddressCommands {
     }
 
     @ShellMethod(value = "Generate new address", key = "generate-address")
-    public void generateNew(String network) {
-        val n = Network.valueOf(network);
+    public void generateNew(@ShellOption(value = {"--network"}, help = "Provide a known network (mainnet, testnet, preprod, preview)") String network) {
+        val n = Network.valueOf(network.toUpperCase());
 
         val nn = switch (n) {
             case MAINNET -> Networks.mainnet();
