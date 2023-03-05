@@ -65,6 +65,7 @@ public class ConsoleWriter {
 
     public static String header(String color, String str) {
         String text = color + str + AnsiColors.ANSI_RESET;
+
         return text;
     }
 

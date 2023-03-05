@@ -28,7 +28,8 @@ dependencies {
     implementation platform('org.springframework.boot:spring-boot-dependencies:3.0.1')
 
     implementation 'com.bloxbean.cardano:cardano-client-lib:0.4.3'
-    implementation 'com.bloxbean.cardano:cardano-client-backend:0.4.3'
+    implementation 'com.bloxbean.cardano:cardano-client-backend-blockfrost:0.4.3'
+    implementation 'com.bloxbean.cardano:cardano-client-backend-koios:0.4.3'
 
     implementation 'com.bloxbean.cardano:aiken-java-binding:0.0.2'
 

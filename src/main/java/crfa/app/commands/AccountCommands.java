@@ -6,6 +6,9 @@ import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationListener;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -18,12 +21,15 @@ import static crfa.app.util.ConsoleWriter.strLn;
 
 @ShellComponent
 @Slf4j
-public class AddressCommands {
+public class AccountCommands implements ApplicationListener<ApplicationEvent> {
 
     @Autowired
     private NetworkCommands networkCommands;
 
     private Map<String, Account> accounts = new LinkedHashMap<>();
+
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     public Optional<Account> findAccountByName(String name) {
         return Optional.ofNullable(accounts.get(name));
@@ -35,7 +41,18 @@ public class AddressCommands {
         val funnyName = faker.funnyName();
         val name = funnyName.name().replace(" ", "_");
 
-        val account = createAcc(networkCommands.getNetwork().orElseThrow());
+        val account = createAcc(networkCommands.getActiveNetwork().orElseThrow());
+
+        accounts.put(name, account);
+
+        printAcc(name, account);
+    }
+
+    @ShellMethod(value = "Restore existing account", key = "restore-account")
+    public void restoreAccount(@ShellOption(value = {"-n"}, help = "Provide account's name") String name,
+                               @ShellOption(value = {"-m"}, help = "Provide account's mnemonic") String mnemonic) {
+        val n = bloxbeanNetwork(networkCommands.getActiveNetwork().orElseThrow());
+        val account = new Account(n, mnemonic);
 
         accounts.put(name, account);
 
@@ -50,7 +67,7 @@ public class AddressCommands {
 
     @ShellMethod(value = "List accounts", key = "list-accounts")
     public void listAccounts() {
-        accounts.forEach(AddressCommands::printAcc);
+        accounts.forEach(AccountCommands::printAcc);
     }
 
     @ShellMethod(value = "Clears saved account", key = "clear-accounts")
@@ -69,14 +86,23 @@ public class AddressCommands {
     }
 
     private static Account createAcc(NetworkCommands.Network network) {
-        val nn = switch (network) {
+        return new Account(bloxbeanNetwork(network));
+    }
+
+    private static com.bloxbean.cardano.client.common.model.Network bloxbeanNetwork(NetworkCommands.Network network) {
+        return switch (network) {
             case MAINNET -> Networks.mainnet();
             case PREPROD -> Networks.preprod();
             case TESTNET -> Networks.testnet();
             case PREVIEW -> Networks.preview();
         };
+    }
 
-        return new Account(nn);
+    @Override
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof NetworkCommands.NetworkSwitchedEvent) {
+            this.accounts.clear();
+        }
     }
 
 }

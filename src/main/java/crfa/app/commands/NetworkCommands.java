@@ -2,6 +2,9 @@ package crfa.app.commands;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -14,7 +17,10 @@ import static crfa.app.util.ConsoleWriter.strLn;
 @Slf4j
 public class NetworkCommands {
 
-    private Optional<Network> network = Optional.of(Network.PREVIEW);
+    private Optional<Network> activeNetwork = Optional.of(Network.PREVIEW);
+
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     public enum Network {
         MAINNET,
@@ -23,14 +29,14 @@ public class NetworkCommands {
         PREVIEW
     }
 
-    public Optional<Network> getNetwork() {
-        return network;
+    public Optional<Network> getActiveNetwork() {
+        return activeNetwork;
     }
 
     @ShellMethod(value = "Current active network", key = "current-network")
     public void currentNetwork() {
-        if (network.isPresent()) {
-            printNetwork(network.orElseThrow());
+        if (activeNetwork.isPresent()) {
+            printNetwork(activeNetwork.orElseThrow());
             return;
         }
 
@@ -44,9 +50,10 @@ public class NetworkCommands {
     @ShellMethod(value = "Switches active network", key = "switch-network")
     public void switchNetwork(@ShellOption(value = {"-n"}, defaultValue = "testnet", help = "Provide a known network (mainnet, testnet, preprod, preview)") String network) {
         val n = Network.valueOf(network.toUpperCase());
-        this.network = Optional.of(n);
+        this.activeNetwork = Optional.of(n);
 
         printNetwork(n);
+        applicationEventPublisher.publishEvent(new NetworkSwitchedEvent(this, n));
     }
 
     private static void printNetwork(Network network) {
@@ -55,6 +62,21 @@ public class NetworkCommands {
         sb.append(strLn("Name: %s", network.name()));
 
         System.out.println(sb);
+    }
+
+    public final class NetworkSwitchedEvent extends ApplicationEvent {
+
+        private final Network network;
+
+        public NetworkSwitchedEvent(Object source, Network network) {
+            super(source);
+            this.network = network;
+        }
+
+        public Network getNetwork() {
+            return network;
+        }
+
     }
 
 }
