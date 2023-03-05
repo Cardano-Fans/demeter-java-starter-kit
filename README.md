@@ -3,8 +3,7 @@ Demeter template to start Cardano development with Java.
 
 ## This template will demononstrate a few basic Cardano functions such as
 - accounts generation
-- transfering ADA to another wallet (simple transactions)
-- invocation of Plutus V2 smart contract
+- transfering ADA to another wallet via simple transactions
 
 We will be using one of the simplest (albeit centralised) methods which is via KOIOS API. By default cli app will use PREVIEW testnet.
 
