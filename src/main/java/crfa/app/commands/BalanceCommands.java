@@ -32,4 +32,16 @@ public class BalanceCommands {
         System.out.println(strLn("Account's %s balance: %d ADA", name, lovelaceToAda(BigInteger.valueOf(sum)).longValue()));
     }
 
+    @ShellMethod(value = "Address's balance", key = "address-balance")
+    public void addressBalance(@ShellOption(value = {"-a"}, help = "Provide address") String address) throws ApiException {
+        if (!address.startsWith("addr")) {
+            throw new RuntimeException("Doesn't seem like right address, ADA bech32 address should start from 'addr'!");
+        }
+
+        val p = providerCommands.getActiveProvider().orElseThrow(() -> new RuntimeException("Provider not initialized!"));
+        val sum = p.backendService().getAddressService().getAddressInfo(address).getValue().getAmount().stream().mapToLong(v -> Long.parseLong(v.getQuantity())).sum();
+
+        System.out.println(strLn("Address's %s balance: %d ADA", address, lovelaceToAda(BigInteger.valueOf(sum)).longValue()));
+    }
+
 }

@@ -26,10 +26,10 @@ public class AccountCommands implements ApplicationListener<ApplicationEvent> {
     @Autowired
     private NetworkCommands networkCommands;
 
-    private Map<String, Account> accounts = new LinkedHashMap<>();
-
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
+
+    private Map<String, Account> accounts = new LinkedHashMap<>();
 
     public Optional<Account> findAccountByName(String name) {
         return Optional.ofNullable(accounts.get(name));
@@ -67,12 +67,15 @@ public class AccountCommands implements ApplicationListener<ApplicationEvent> {
 
     @ShellMethod(value = "List accounts", key = "list-accounts")
     public void listAccounts() {
+        System.out.println(strLn(""));
         accounts.forEach(AccountCommands::printAcc);
     }
 
     @ShellMethod(value = "Clears saved account", key = "clear-accounts")
     public void clearAccounts() {
+        System.out.println(strLn("Clearing accounts..."));
         this.accounts.clear();
+        System.out.println(strLn("Accounts empty."));
     }
 
     private static void printAcc(String name, Account account) {
@@ -101,6 +104,7 @@ public class AccountCommands implements ApplicationListener<ApplicationEvent> {
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof NetworkCommands.NetworkSwitchedEvent) {
+            System.out.println(strLn("Network switched, clearing accounts. Please re-initialize accounts."));
             this.accounts.clear();
         }
     }

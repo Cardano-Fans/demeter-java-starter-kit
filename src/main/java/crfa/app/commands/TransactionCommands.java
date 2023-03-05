@@ -34,15 +34,14 @@ public class TransactionCommands {
     @Autowired
     private AccountCommands accountCommands;
 
-    @ShellMethod(value = "Current active network", key = "send-ada")
+    @ShellMethod(value = "Send ADA from an account to another account.", key = "send-ada")
     public void sendAda(@ShellOption(value = {"-f"}, help = "from (address or account name)") String from,
-                        @ShellOption(value = {"-t"}, help = "to (address or account name)") String to,
+                        @ShellOption(value = {"-t"}, help = "to (bech32 ADA address or account's name)") String to,
                         @ShellOption(value = {"-a"}, help = "ADA amount") int adaAmount) throws CborSerializationException, ApiException {
         val senderAccount = getAccount(from);
-        val receiverAccount = getAccount(to);
-
         val senderAddress = senderAccount.baseAddress();
-        val receiverAddress = receiverAccount.baseAddress();
+
+        val receiverAddress = getReceiverAddress(to);
 
         val backendService = providerCommands.getActiveProvider().orElseThrow().backendService();
         val transactionService = backendService.getTransactionService();
@@ -71,6 +70,16 @@ public class TransactionCommands {
 
     private Account getAccount(String accName) {
         return accountCommands.findAccountByName(accName).orElseThrow(()  -> new RuntimeException(String.format("%s does not represent valid account", accName)));
+    }
+
+    private String getReceiverAddress(String accName) {
+        if (accName.startsWith("addr_")) {
+            return accName;
+        }
+
+        return accountCommands.findAccountByName(accName)
+                .map(Account::baseAddress)
+                .orElseThrow(()  -> new RuntimeException(String.format("%s does not represent valid account", accName)));
     }
 
     private void waitForTransaction(TransactionService transactionService, Result<String> result) {
