@@ -7,6 +7,8 @@ Demeter template to start Cardano development with Java.
 
 We will be using one of the simplest (albeit centralised) methods which is via KOIOS API. By default cli app will use PREVIEW testnet.
 
+Upon opening project make sure to run: ```CardanoJavaStarterKit``` with at least JDK 17 LTS.
+
 ## Account generation
 
 Start application and invoke:

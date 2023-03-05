@@ -1,9 +1,0 @@
-micronaut:
-  application:
-    name: java-simple-transactions
-  server:
-    port: 8080
-
-env: preprod
-projectId: <BLOCKFROST_API_KEY>
-walletFilename: .wallet.dat
