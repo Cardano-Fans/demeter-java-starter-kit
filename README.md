@@ -1,7 +1,7 @@
 # demeter-java-starter-kit
 Demeter template to start Cardano development with Java.
 
-## This template will demononstrate a few basic Cardano functions such as
+## This template will demonstrate a few basic Cardano functions such as
 - accounts management via simple wallet
 - transfering ADA to another wallet via simple transactions
 
