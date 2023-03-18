@@ -62,5 +62,25 @@ Waiting for transaction to be processed ....
 Waiting for transaction to be processed ....
 ...
 Waiting for transaction to be processed ....
-[Success] Transaction success, result: aa55e39ed2bb0776f7dc21a831634cc2cf9b6c7c996ed68e9caf1ab88c4f15bc
+[Success] Transaction worked, result: aa55e39ed2bb0776f7dc21a831634cc2cf9b6c7c996ed68e9caf1ab88c4f15bc
 ```
+
+Now let's demonstrate invoking PlutusV2 smart contract. We will invoke a simple GuessGame, which has already been deployed to Cardano's preview net.
+In this example we will use:
+- CIP-31: reference inputs to reference previously deployed contract
+- CIP-40: collateral outputs to prevent necessity for a user to specify collateral input
+- Aiken: we will use Aiken to evaluate on the client side ExUnits (costs) for invoking redeemers
+
+First we need to lock funds for this let's:
+```shell
+shell:>lock-ada -f Rick_Shaw -a 5
+```
+This will lock 5 ADA for Rick Shaw's account in a smart contract: addr_test1wzcppsyg36f65jydjsd6fqu3xm7whxu6nmp3pftn9xfgd4ckah4da
+
+After you get successful message locking ADA, we can unlock it with the following command:
+
+```shell
+shell:>claim-ada -f Rick_Shaw
+```
+
+Now you should receive your 5 ADA back!

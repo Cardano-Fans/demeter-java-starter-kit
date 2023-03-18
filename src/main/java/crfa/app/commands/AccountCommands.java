@@ -92,7 +92,7 @@ public class AccountCommands implements ApplicationListener<ApplicationEvent> {
         return new Account(bloxbeanNetwork(network));
     }
 
-    private static com.bloxbean.cardano.client.common.model.Network bloxbeanNetwork(NetworkCommands.Network network) {
+    public static com.bloxbean.cardano.client.common.model.Network bloxbeanNetwork(NetworkCommands.Network network) {
         return switch (network) {
             case MAINNET -> Networks.mainnet();
             case PREPROD -> Networks.preprod();
