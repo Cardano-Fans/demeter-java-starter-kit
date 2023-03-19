@@ -9,6 +9,8 @@ We will be using one of the simplest (albeit centralised) methods which is via K
 
 Upon opening project make sure to run: ```CardanoJavaStarterKit``` with at least JDK 17 LTS.
 
+[![Code in Cardano Workspace](https://demeter.run/code/badge.svg)](https://demeter.run/code?repository=https://github.com/Cardano-Fans/demeter-java-starter-kit&template=java)
+
 ## Account generation
 
 Start application and invoke:
